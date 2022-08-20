@@ -1,0 +1,9 @@
+#+TITLE: Readme
+
+
+* Setup
+To install, run:
+- ~docker build . -t node-red-realtime-sensing~
+
+To run, run:
+- ~docker-compose -f docker-compose.yml -p realtime-sensing up~
