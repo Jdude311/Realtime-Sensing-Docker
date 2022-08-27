@@ -13,21 +13,21 @@ services:
     restart: always
     environment:
       - TZ=America/New_York
+    ports:
+      - "1880:1880"
     networks:
       - realtime-sensing-net
-    ports:
-      - 1880:1880
     volumes:
       - node-red-data:/data
 
   mongo:
     image: mongo
     restart: always
+    networks:
+      - realtime-sensing-net
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: test_password
-    networks:
-      - realtime-sensing-net
 
   mongo-express:
     image: mongo-express
@@ -43,30 +43,11 @@ services:
     volumes:
       - mongo-data:/data
 
-  web:
-    build: django-soft-ui-dashboard/
-    # networks:
-    #   - realtime-sensing-net
-
-  # django:
-  #   build: ./django/
-  #   command: python manage.py runserver django:8000
-  #   networks:
-  #     - realtime-sensing-net
-  #   ports:
-  #     - 8000:8000
-  #   volumes:
-  #     - ./django/:/code
-  #   environment:
-  #     DEBUG: "true"
 
 
 volumes:
   node-red-data:
   mongo-data:
-  # django-data:
-  static:
-
 
 networks:
   realtime-sensing-net:
