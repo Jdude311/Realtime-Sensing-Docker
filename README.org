@@ -1,0 +1,22 @@
+
+* Setup
+
+** Build
+Run the ~./rebuild.sh~ as root.
+
+** Run
+Run the command ~docker-compose -f docker-compose.yml -p realtime-sensing up~. You may need to run this as root.
+
+** Setting up the database, backend, and frontend
+
+*** MongoDB (database)
+Requires no further configuration.
+
+*** Node-Red (backend)
+To get node-red to work, you simply have to enter the credentials for the mongo database.
+
+Add your MQTT credentials to the "MQTT" node.
+
+For the mongo nodes, there are two users: ~mqtt~, which has read-write access, and ~web~, which only has read access. The ~mqtt~ user should be entered to the first mongo node ("sensors@mongo (user mqtt)")--default password is mqttpassword.
+
+The ~web~ user should be added to all others. To do this, on the first node you configure for web, click "add new mongodb." Enter ~mongo~ for the hostname. The default ~web~ user password is webpassword. Then, for subsequent web nodes, click on the mongodb credential you just created.
