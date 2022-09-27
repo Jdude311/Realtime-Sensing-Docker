@@ -23,3 +23,11 @@ db.createUser(
     ]
   }
 );
+
+db = new Mongo().getDB("sensors");
+
+db.createCollection("realtime", { capped: false });
+
+db.realtime.insert([
+  {"time": new Date(), "location": "RDHS 312 (SCD30 TEST 1)","tvoc": 0, "co2": 807.117, "temperature": 27.0268, "humidity": 28.1662}
+])
