@@ -21,6 +21,7 @@ services:
       - 1880:1880
     volumes:
       - node-red-data:/data
+      - ./node-red/config.d:/data/:rwo
 
   mongo:
     container_name: realtime-sensing_mongo
@@ -67,6 +68,7 @@ services:
       - realtime-sensing-net_frontend
     depends_on:
       - mongo
+      - mongo-express
       - node-red
 
 

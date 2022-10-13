@@ -1,0 +1,200 @@
+[
+    {
+        "id": "a5abaabcdeebfa2e",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "709d59ad552b66a7",
+        "type": "mongodb",
+        "hostname": "mongo",
+        "topology": "direct",
+        "connectOptions": "",
+        "port": "27017",
+        "db": "sensors",
+        "name": "mongo mqtt"
+    },
+    {
+        "id": "752b81f06e04fa48",
+        "type": "mongodb",
+        "hostname": "mongo",
+        "topology": "direct",
+        "connectOptions": "",
+        "port": "27017",
+        "db": "sensors",
+        "name": "mongo web"
+    },
+    {
+        "id": "fe8a80395d2e8bf9",
+        "type": "mqtt in",
+        "z": "a5abaabcdeebfa2e",
+        "name": "",
+        "topic": "",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 70,
+        "y": 220,
+        "wires": [
+            [
+                "5644c1eef910e9a5"
+            ]
+        ]
+    },
+    {
+        "id": "c59708c4f31b8f2d",
+        "type": "mongodb out",
+        "z": "a5abaabcdeebfa2e",
+        "mongodb": "709d59ad552b66a7",
+        "name": "sensors@mongo (user mqtt)",
+        "collection": "realtime",
+        "payonly": false,
+        "upsert": false,
+        "multi": false,
+        "operation": "store",
+        "x": 520,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "5ecd031bc15d1464",
+        "type": "http in",
+        "z": "a5abaabcdeebfa2e",
+        "name": "",
+        "url": "/sensors",
+        "method": "get",
+        "upload": false,
+        "swaggerDoc": "",
+        "x": 90,
+        "y": 400,
+        "wires": [
+            [
+                "df65d99eb8e92fd4",
+                "f4c79d8b78b6cbb7"
+            ]
+        ]
+    },
+    {
+        "id": "45ca3a19ebaaf163",
+        "type": "mongodb in",
+        "z": "a5abaabcdeebfa2e",
+        "mongodb": "752b81f06e04fa48",
+        "name": "sensors@mongo (user web) co2",
+        "collection": "realtime",
+        "operation": "find",
+        "x": 530,
+        "y": 400,
+        "wires": [
+            [
+                "349a549d0c4493ab",
+                "14a8fd4d74b29cf2"
+            ]
+        ]
+    },
+    {
+        "id": "df65d99eb8e92fd4",
+        "type": "function",
+        "z": "a5abaabcdeebfa2e",
+        "name": "construct query",
+        "func": "const MAX_READINGS = 300;\nfunction isValidNum(param) {\n    return (Number(param) !== undefined && Number(param) === Number(param));\n}\n\nvar params = msg.payload;\n\nvar payload = {}\nif (isValidNum(params.n)) {\n    msg.limit = Math.min(MAX_READINGS, parseInt(params.n));\n} else {\n    msg.limit=MAX_READINGS;\n}\nmsg.sort = { \"time\": 1 };\nif (params.location !== undefined) {\n    payload.location = params.location; // filter by request location param\n}\n\nif (isValidNum(params.min_time) || isValidNum(params.max_time)) {\n    payload.time = {};\n}\nif (isValidNum(params.min_time)) {\n    payload.time.$gt = parseInt(params.min_time);\n}\nif (isValidNum(params.max_time)) {\n    payload.time.$lt = parseInt(params.max_time);\n}\n\nmsg.payload = payload;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 280,
+        "y": 400,
+        "wires": [
+            [
+                "45ca3a19ebaaf163",
+                "39a0654722a97f70"
+            ]
+        ]
+    },
+    {
+        "id": "39a0654722a97f70",
+        "type": "debug",
+        "z": "a5abaabcdeebfa2e",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 460,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "f4c79d8b78b6cbb7",
+        "type": "debug",
+        "z": "a5abaabcdeebfa2e",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 260,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "349a549d0c4493ab",
+        "type": "http response",
+        "z": "a5abaabcdeebfa2e",
+        "name": "",
+        "statusCode": "",
+        "headers": {},
+        "x": 770,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "14a8fd4d74b29cf2",
+        "type": "debug",
+        "z": "a5abaabcdeebfa2e",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 780,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "5644c1eef910e9a5",
+        "type": "function",
+        "z": "a5abaabcdeebfa2e",
+        "name": "function 1",
+        "func": "msg.payload.time = Date.now();\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 260,
+        "y": 220,
+        "wires": [
+            [
+                "c59708c4f31b8f2d"
+            ]
+        ]
+    }
+]
