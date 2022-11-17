@@ -12,7 +12,7 @@ services:
     # image: node-red-realtime-sensing
     container_name: realtime-sensing_node-red
     build: node-red/
-    restart: always
+    restart: unless-stopped
     environment:
       - TZ=America/New_York
     networks:
@@ -26,7 +26,7 @@ services:
   mongo:
     container_name: realtime-sensing_mongo
     image: mongo
-    restart: always
+    restart: unless-stopped
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: test_password
@@ -40,7 +40,7 @@ services:
   mongo-express:
     container_name: realtime-sensing_mongo-express
     image: mongo-express
-    restart: always
+    restart: unless-stopped
     ports:
       - 8081:8081
     networks:
@@ -54,7 +54,7 @@ services:
 
   nginx:
     container_name: realtime-sensing_nginx
-    restart: always
+    restart: unless-stopped
     image: "nginx:latest"
     ports:
       - "5085:5085"
@@ -71,6 +71,14 @@ services:
       - mongo-express
       - node-red
 
+  # cloudflared:
+  #   container_name: realtime-sensing_cloudflared
+  #   restart: unless-stopped
+  #   image: "cloudflare/cloudflared:latest"
+  #   networks:
+  #     - realtime-sensing-net_proxy
+  #     - realtime-sensing-net_frontend
+
 
 volumes:
   node-red-data:
@@ -83,3 +91,6 @@ volumes:
 networks:
   realtime-sensing-net_backend:
   realtime-sensing-net_frontend:
+  # realtime-sensing-net_proxy:
+  #   driver: bridge
+  #   external: true
