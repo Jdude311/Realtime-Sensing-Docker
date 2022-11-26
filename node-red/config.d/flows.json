@@ -28,13 +28,56 @@
         "name": "mongo web"
     },
     {
+        "id": "dd1bfbecde42f8f0",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "3f98b9bae75643d28a6139660f394a6c.s1.eu.hivemq.cloud",
+        "port": "8883",
+        "tls": "8a997a317a377473",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": true,
+        "protocolVersion": "5",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "debug",
+        "birthQos": "0",
+        "birthPayload": "Node-Red Connected!",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "8a997a317a377473",
+        "type": "tls-config",
+        "name": "",
+        "cert": "",
+        "key": "",
+        "ca": "",
+        "certname": "",
+        "keyname": "",
+        "caname": "",
+        "servername": "",
+        "verifyservercert": true,
+        "alpnprotocol": ""
+    },
+    {
         "id": "fe8a80395d2e8bf9",
         "type": "mqtt in",
         "z": "a5abaabcdeebfa2e",
         "name": "",
-        "topic": "",
-        "qos": "2",
-        "datatype": "auto-detect",
+        "topic": "#",
+        "qos": "0",
+        "datatype": "utf8",
+        "broker": "dd1bfbecde42f8f0",
         "nl": false,
         "rap": true,
         "rh": 0,
@@ -43,7 +86,8 @@
         "y": 220,
         "wires": [
             [
-                "5644c1eef910e9a5"
+                "5644c1eef910e9a5",
+                "579134a46f25f103"
             ]
         ]
     },
@@ -102,7 +146,7 @@
         "type": "function",
         "z": "a5abaabcdeebfa2e",
         "name": "construct query",
-        "func": "const MAX_READINGS = 300;\nfunction isValidNum(param) {\n    return (Number(param) !== undefined && Number(param) === Number(param));\n}\n\nvar params = msg.payload;\n\nvar payload = {}\nif (isValidNum(params.n)) {\n    msg.limit = Math.min(MAX_READINGS, parseInt(params.n));\n} else {\n    msg.limit=MAX_READINGS;\n}\nmsg.sort = { \"time\": 1 };\nif (params.location !== undefined) {\n    payload.location = params.location; // filter by request location param\n}\n\nif (isValidNum(params.min_time) || isValidNum(params.max_time)) {\n    payload.time = {};\n}\nif (isValidNum(params.min_time)) {\n    payload.time.$gt = parseInt(params.min_time);\n}\nif (isValidNum(params.max_time)) {\n    payload.time.$lt = parseInt(params.max_time);\n}\n\nmsg.payload = payload;\n\nreturn msg;",
+        "func": "const MAX_READINGS = 300;\nfunction isValidNum(param) {\n    return (Number(param) !== undefined && Number(param) === Number(param));\n}\n\nvar params = msg.payload;\n\nvar payload = {}\nif (isValidNum(params.n)) {\n    msg.limit = Math.min(MAX_READINGS, parseInt(params.n));\n} else {\n    msg.limit=MAX_READINGS;\n}\nmsg.sort = { \"time\": -1 };\nif (params.location !== undefined) {\n    payload.location = params.location; // filter by request location param\n}\n\nif (isValidNum(params.min_time) || isValidNum(params.max_time)) {\n    payload.time = {};\n}\nif (isValidNum(params.min_time)) {\n    payload.time.$gt = parseInt(params.min_time);\n}\nif (isValidNum(params.max_time)) {\n    payload.time.$lt = parseInt(params.max_time);\n}\n\nmsg.payload = payload;\n\nreturn msg;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -183,7 +227,7 @@
         "type": "function",
         "z": "a5abaabcdeebfa2e",
         "name": "function 1",
-        "func": "msg.payload.time = Date.now();\nreturn msg;",
+        "func": "msg.payload = JSON.parse(msg.payload)\nmsg.payload.time = Date.now();\nreturn msg.payload;",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
@@ -193,8 +237,45 @@
         "y": 220,
         "wires": [
             [
-                "c59708c4f31b8f2d"
+                "c59708c4f31b8f2d",
+                "579134a46f25f103"
             ]
+        ]
+    },
+    {
+        "id": "579134a46f25f103",
+        "type": "debug",
+        "z": "a5abaabcdeebfa2e",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 460,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "baaf433d40317b89",
+        "type": "mqtt in",
+        "z": "a5abaabcdeebfa2e",
+        "name": "",
+        "topic": "#",
+        "qos": "0",
+        "datatype": "auto-detect",
+        "broker": "dd1bfbecde42f8f0",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 70,
+        "y": 160,
+        "wires": [
+            []
         ]
     }
 ]

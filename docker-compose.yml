@@ -61,7 +61,7 @@ services:
       - "80:80"
     volumes:
       - ./nginx/:/etc/nginx/:ro
-      - ./AdminLTE:/usr/share/nginx/html:ro
+      - ./coreui-free-react-admin-template/build:/usr/share/nginx/html:ro
       - nginx-data:/data
     networks:
       - realtime-sensing-net_backend
@@ -91,6 +91,9 @@ volumes:
 networks:
   realtime-sensing-net_backend:
   realtime-sensing-net_frontend:
+  # host:
+  #   name: "host"
+  #   external: true
   # realtime-sensing-net_proxy:
   #   driver: bridge
   #   external: true
