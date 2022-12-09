@@ -20,7 +20,7 @@ services:
     ports:
       - 1880:1880
     volumes:
-      - ./node-red/config.d:/data/:rwo
+      - ./node-red/config.d:/data/:rw
 
   mongo:
     container_name: realtime-sensing_mongo
