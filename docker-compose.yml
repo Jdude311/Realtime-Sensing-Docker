@@ -51,6 +51,18 @@ services:
     volumes:
       - mongo-express-data:/data
 
+  web:
+    container_name: realtime-sensing_nodejs
+    build: ./coreui-free-react-admin-template/
+    command: npm run start
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    networks:
+      - realtime-sensing-net_backend
+    volumes:
+      - ./coreui-free-react-admin-template/:/usr/app/:ro
+
   nginx:
     container_name: realtime-sensing_nginx
     restart: unless-stopped
