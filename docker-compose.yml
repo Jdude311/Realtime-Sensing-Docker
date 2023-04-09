@@ -68,7 +68,7 @@ services:
     restart: unless-stopped
     image: "nginx:latest"
     ports:
-      - "5085:5085"
+      # - "5085:5085"
       - "80:80"
     volumes:
       - ./nginx/:/etc/nginx/:ro
@@ -82,13 +82,15 @@ services:
       - mongo-express
       - node-red
 
-  # cloudflared:
-  #   container_name: realtime-sensing_cloudflared
-  #   restart: unless-stopped
-  #   image: "cloudflare/cloudflared:latest"
-  #   networks:
-  #     - realtime-sensing-net_proxy
-  #     - realtime-sensing-net_frontend
+  cloudflared:
+    container_name: realtime-sensing_cloudflared
+    restart: unless-stopped
+    image: "cloudflare/cloudflared:latest"
+    # command: tunnel run --token ${CLOUDFLARE_TOKEN} --url http://localhost:80
+    command: tunnel --url http://realtime-sensing_nginx:80  # this will open a tunnel on https://somedomain.trycloudflare.com, used for testing purposes
+    networks:
+      - realtime-sensing-net_frontend
+      # - realtime-sensing-net_proxy
 
 
 volumes:
@@ -101,7 +103,9 @@ volumes:
 
 networks:
   realtime-sensing-net_backend:
+    driver: host
   realtime-sensing-net_frontend:
+    driver: bridge
   # host:
   #   name: "host"
   #   external: true

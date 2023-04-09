@@ -3,3 +3,4 @@
 *.log
 tmp/
 ./node-red/config.d/flows_cred.json
+/.env
